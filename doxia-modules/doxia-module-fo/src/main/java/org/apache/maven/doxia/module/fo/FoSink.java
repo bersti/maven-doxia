@@ -783,7 +783,28 @@ public class FoSink
 
         // http://xmlgraphics.apache.org/fop/graphics.html#resolution
 
-        final String[] valids = new String[] {"content-height", "content-width", "height", "width"};
+        final String[] valids = new String[] { "alignment-adjust", "alignment-baseline", "allowed-height-scale",
+            "allowed-width-scale", "background", "background-attachment", "background-color", "background-image",
+            "background-position", "background-position-horizontal", "background-position-vertical",
+            "background-repeat", "baseline-shift", "block-progression-dimension", "border", "border-after-color",
+            "border-after-style", "border-after-width", "border-before-color", "border-before-style",
+            "border-before-width", "border-bottom", "border-bottom-color", "border-bottom-style", "border-bottom-width",
+            "border-color", "border-end-color", "border-end-style", "border-end-width", "border-left",
+            "border-left-color", "border-left-style", "border-left-width", "border-right", "border-right-color",
+            "border-right-style", "border-right-width", "border-spacing", "border-start-color", "border-start-style",
+            "border-start-width", "border-style", "border-top", "border-top-color", "border-top-style",
+            "border-top-width", "border-width", "bottom", "clip", "content-height", "content-type", "content-width",
+            "display-align", "dominant-baseline", "height", "index-class", "index-key", "inline-progression-dimension",
+            "keep-with-next", "keep-with-next.within-column", "keep-with-next.within-line",
+            "keep-with-next.within-page", "keep-with-previous", "keep-with-previous.within-column",
+            "keep-with-previous.within-line", "keep-with-previous.within-page", "left", "line-height", "margin",
+            "margin-bottom", "margin-left", "margin-right", "margin-top", "overflow", "padding", "padding-after",
+            "padding-before", "padding-bottom", "padding-end", "padding-left", "padding-right", "padding-start",
+            "padding-top", "position", "relative-position", "right", "role", "scaling", "scaling-method",
+            "source-document", "space-end", "space-end.conditionality", "space-end.maximum", "space-end.minimum",
+            "space-end.optimum", "space-end.precedence", "space-start", "space-start.conditionality",
+            "space-start.maximum", "space-start.minimum", "space-start.optimum", "space-start.precedence", "text-align",
+            "top", "vertical-align", "width" };
         final MutableAttributeSet filtered = SinkUtils.filterAttributes( attributes, valids );
 
         if ( filtered != null )
