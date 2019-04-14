@@ -737,12 +737,12 @@ public class FoAggregateSink
     protected String getFooterText()
     {
         int actualYear;
-        String add = " &#8226; " + getBundle( Locale.US ).getString( "footer.rights" );
+        String add = " &#8226; " + getBundle().getString( "footer.rights" );
         String companyName = "";
 
         if ( docModel != null && docModel.getMeta() != null && docModel.getMeta().isConfidential() )
         {
-            add = add + " &#8226; " + getBundle( Locale.US ).getString( "footer.confidential" );
+            add = add + " &#8226; " + getBundle().getString( "footer.confidential" );
         }
 
         if ( docModel != null && docModel.getCover() != null && docModel.getCover().getCompanyName() != null )
@@ -1257,6 +1257,35 @@ public class FoAggregateSink
         writeEndTag( TABLE_CELL_TAG );
 
         writeEndTag( TABLE_ROW_TAG );
+    }
+    
+    private Locale getLocaleForDocumentLanguage()
+    {
+        if ( docModel == null ) 
+        {
+            return null;
+        }
+        
+        DocumentMeta meta = docModel.getMeta();
+        if ( meta == null )
+        {
+            return null;
+        }
+        
+        String lang = meta.getLanguage();
+        if ( lang == null || lang.isEmpty() )
+        {
+            return null;
+        }
+        
+        return Locale.forLanguageTag( lang );
+    }
+    
+    private ResourceBundle getBundle()
+    {
+        Locale locale = getLocaleForDocumentLanguage();
+        locale = locale != null ? locale : Locale.US;
+        return getBundle( locale );
     }
 
     private ResourceBundle getBundle( Locale locale )
