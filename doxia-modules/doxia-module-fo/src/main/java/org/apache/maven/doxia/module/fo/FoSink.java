@@ -198,7 +198,7 @@ public class FoSink
     {
         init();
 
-        startPageSequence( "0", null, null );
+        startPageSequence( "0" );
     }
 
     /** {@inheritDoc} */
@@ -936,8 +936,11 @@ public class FoSink
     public void table( SinkEventAttributes attributes )
     {
         writeEOL();
-        writeStartTag( BLOCK_TAG, "table.padding" );
-
+        
+        final String[] valids = new String[] { "keep-together", "keep-with-next.within-page" };
+        final MutableAttributeSet filtered = SinkUtils.filterAttributes( attributes, valids );
+        
+        writeStartTag( BLOCK_TAG, "table.padding", filtered );
         // <fo:table-and-caption> is XSL-FO 1.0 standard but still not implemented in FOP 0.95
         //writeStartTag( TABLE_AND_CAPTION_TAG );
 
@@ -1507,6 +1510,28 @@ public class FoSink
         writeEOL();
         writeStartTag( tag, config.getAttributeSet( attributeId ) );
     }
+    
+    /**
+     * Writes a start tag, prepending EOL, and merges additional attributes.
+     *
+     * @param tag The tag.
+     * @param attributeId An id identifying the attribute set.
+     */
+    protected void writeStartTag( Tag tag, String attributeId, MutableAttributeSet additionalAttrs )
+    {
+        writeEOL();
+        SinkEventAttributeSet actualAttrs = new SinkEventAttributeSet();
+        MutableAttributeSet originalAttrs = config.getAttributeSet( attributeId );
+        if ( originalAttrs != null )
+        {
+            actualAttrs.addAttributes( originalAttrs );
+        }
+        if ( additionalAttrs != null )
+        {
+            actualAttrs.addAttributes( additionalAttrs );
+        }
+        writeStartTag( tag, actualAttrs );
+    }
 
     /**
      * Writes a start tag, prepending EOL.
@@ -1743,36 +1768,12 @@ public class FoSink
      * Starts a page sequence.
      *
      * @param initPageNumber The initial page number. Should be either "0" (for the first page) or "auto".
-     * @param headerText The text to write in the header, if null, nothing is written.
-     * @param footerText The text to write in the footer, if null, nothing is written.
      */
-    protected void startPageSequence( String initPageNumber, String headerText, String footerText )
+    protected void startPageSequence( String initPageNumber )
     {
         writeln( "<fo:page-sequence initial-page-number=\"" + initPageNumber + "\" master-reference=\"body\">" );
-        regionBefore( headerText );
-        regionAfter( footerText );
         writeln( "<fo:flow flow-name=\"xsl-region-body\">" );
         chapterHeading( null, true );
-    }
-
-    /**
-     * Writes a 'xsl-region-before' block.
-     *
-     * @param headerText The text to write in the header, if null, nothing is written.
-     */
-    protected void regionBefore( String headerText )
-    {
-        // do nothing, overridden by AggregateSink
-    }
-
-    /**
-     * Writes a 'xsl-region-after' block. By default does nothing, gets overridden by AggregateSink.
-     *
-     * @param footerText The text to write in the footer, if null, nothing is written.
-     */
-    protected void regionAfter( String footerText )
-    {
-        // do nothing, overridden by AggregateSink
     }
 
     /**

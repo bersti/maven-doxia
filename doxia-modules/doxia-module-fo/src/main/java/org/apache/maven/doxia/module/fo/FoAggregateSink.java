@@ -252,7 +252,7 @@ public class FoAggregateSink
 
         resetSectionCounter();
 
-        startPageSequence( getHeaderText(), getFooterText() );
+        startPageSequence();
 
         if ( docName == null )
         {
@@ -703,19 +703,16 @@ public class FoAggregateSink
 
     /**
      * Starts a page sequence, depending on the current chapter.
-     *
-     * @param headerText The text to write in the header, if null, nothing is written.
-     * @param footerText The text to write in the footer, if null, nothing is written.
      */
-    protected void startPageSequence( String headerText, String footerText )
+    protected void startPageSequence()
     {
         if ( chapter == 1 )
         {
-            startPageSequence( "0", headerText, footerText );
+            startPageSequence( "0" );
         }
         else
         {
-            startPageSequence( "auto", headerText, footerText );
+            startPageSequence( "auto" );
         }
     }
 
@@ -769,8 +766,17 @@ public class FoAggregateSink
     {
         return Integer.toString( chapter ) + ".";
     }
-
+    
     @Override
+    protected void startPageSequence( String initPageNumber )
+    {
+        writeln( "<fo:page-sequence initial-page-number=\"" + initPageNumber + "\" master-reference=\"body\">" );
+        regionBefore( getHeaderText() );
+        regionAfter( getFooterText() );
+        writeln( "<fo:flow flow-name=\"xsl-region-body\">" );
+        chapterHeading( null, true );
+    }
+
     protected void regionBefore( String headerText )
     {
         writeStartTag( STATIC_CONTENT_TAG, "flow-name", "xsl-region-before" );
@@ -800,7 +806,6 @@ public class FoAggregateSink
         writeEndTag( STATIC_CONTENT_TAG );
     }
 
-    @Override
     protected void regionAfter( String footerText )
     {
         writeStartTag( STATIC_CONTENT_TAG, "flow-name", "xsl-region-after" );
